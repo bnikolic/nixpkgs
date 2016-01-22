@@ -15837,6 +15837,8 @@ let
 
   mg = callPackage ../applications/editors/mg { };
 
+  libsakura = callPackage ../development/libraries/libsakura { };
+
 }; # self_ =
 
 
