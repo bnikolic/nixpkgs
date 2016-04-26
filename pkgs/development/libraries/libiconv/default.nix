@@ -1,6 +1,7 @@
 { fetchurl, stdenv, lib }:
 
-assert (!stdenv.isLinux);
+# Fetchgit for cross-build onto windows will not build with this
+# assert (!stdenv.isLinux);
 
 stdenv.mkDerivation rec {
   name = "libiconv-1.14";

@@ -59,13 +59,13 @@ let
     "variant=${variant}"
     "threading=${threading}"
     "runtime-link=${runtime-link}"
-    "link=${link}"
     "${cflags}"
   ] ++ optional (variant == "release") "debug-symbols=off";
 
   nativeB2Flags = [
     "-sEXPAT_INCLUDE=${expat}/include"
     "-sEXPAT_LIBPATH=${expat}/lib"
+    "link=${link}"
   ] ++ optional (toolset != null) "toolset=${toolset}"
     ++ optional (mpi != null) "--user-config=user-config.jam";
   nativeB2Args = concatStringsSep " " (genericB2Flags ++ nativeB2Flags);
@@ -76,8 +76,12 @@ let
     "--user-config=user-config.jam"
     "toolset=gcc-cross"
     "--without-python"
-  ];
-  crossB2Args = concatMapStringsSep " " (genericB2Flags ++ crossB2Flags);
+  ] ++ optional (stdenv.cross.libc == "msvcrt") "target-os=windows"
+  ++ optional (stdenv.cross.libc == "msvcrt") "threadapi=win32"
+  ++ optional (stdenv.cross.libc == "msvcrt") "binary-format=pe"
+  ++ optional (stdenv.cross.libc == "msvcrt") "abi=ms" ;
+
+  crossB2Args = concatStringsSep " " (genericB2Flags ++ crossB2Flags);
 
   builder = b2Args: ''
     ./b2 ${b2Args}
